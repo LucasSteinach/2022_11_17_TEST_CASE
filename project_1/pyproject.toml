@@ -8,6 +8,7 @@ packages = [{include = "project_1"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pytest-cov = "^4.0.0"
 
 
 [build-system]

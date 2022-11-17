@@ -5,6 +5,7 @@ domains = ['ru', 'com', 'de', 'info']
 
 def test_get_domains():
     assert get_domains()[1] == 200
+    assert isinstance(get_domains()[0], list)
 
 
 def test_edit_link():
