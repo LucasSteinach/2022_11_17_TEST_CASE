@@ -2,7 +2,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from pprint import pprint
-from time import sleep
+# from time import sleep
 
 METHODS = [
     'CONNECT',
@@ -18,12 +18,12 @@ METHODS = [
 
 
 #  parses top-level domains from internet
-def get_domains() -> list:
+def get_domains():
     url = 'http://www.tigir.com/domains.htm'
     resp = requests.get(url)
     soup = BeautifulSoup(resp.text, 'lxml')
     result = [tag.text[1:] for tag in soup.find_all('dt') if tag.text[0] == '.']
-    return result
+    return result, resp.status_code
 
 
 def edit_link(code: str, ink: str) -> str:
@@ -32,7 +32,7 @@ def edit_link(code: str, ink: str) -> str:
     if code == 'www':
         return 'https://' + ink
     if code == 'http':
-        return 'https://' + ink.split('//')[-1]
+        return 'https://www.' + ink.split('//')[-1]
     return ink
 
 
@@ -53,19 +53,19 @@ def is_link(inp: str, domains):
     return False, None
 
 
-if __name__ == '__main__':
-    DOMAINS = get_domains()
+def get_data(filename) -> list:
+    with open(filename) as file:
+        str_list = ''.join(file.readlines()).split('\n')
+    return str_list
+
+
+def execute(filename: str) -> dict:
+    domains_list = get_domains()[0]
     res_dict = dict()
+    strings_list = get_data(filename)
 
-    with open('input_strings.txt') as file:
-        lines = ''.join(file.readlines()).split('\n')
-
-    # print(lines, '\n-----------\n')
-
-    for line in lines:
-
-        link = is_link(line, DOMAINS)
-        # print('(', link[0], ' ', link[1], ' )')
+    for line in strings_list:
+        link = is_link(line, domains_list)
         if not link[0]:
             print(f"The string '{line}' is not a link")
         else:
@@ -79,4 +79,11 @@ if __name__ == '__main__':
                 if response.status_code != 405:
                     res_dict[link[1]].update({method: response.status_code})
                 # sleep(2)
-    pprint(res_dict)
+    return res_dict
+
+
+if __name__ == '__main__':
+    pprint(execute('input_strings.txt'))
+
+
+
