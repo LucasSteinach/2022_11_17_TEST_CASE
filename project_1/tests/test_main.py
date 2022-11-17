@@ -17,6 +17,7 @@ def test_edit_link():
 def test_domain_check():
     link_true_1 = 'http://baz.info'
     link_false_1 = 'http://foo.in'
+
     assert domain_check(link_true_1, domains)
     assert not domain_check(link_false_1, domains)
 
@@ -40,13 +41,22 @@ def test_is_link():
 def test_get_data():
     filename = 'tests/strings.txt'
     data = get_data(filename)
+
     assert str(type(data)) == "<class 'list'>"
     assert data[3] == 'www.mobile.de'
 
 
 def test_execute():
     filename = 'tests/single_link.txt'
-    assert type(execute(filename)) == type(dict())
+    link = 'https://www.mobile.de'
+    result = execute(filename)
+
+    assert isinstance(result, dict)
+    assert result.get(link)
+    assert not result[link].get("GETT")
+    assert result[link].get("GET")
+    assert isinstance(result[link], dict)
+
 
 
 

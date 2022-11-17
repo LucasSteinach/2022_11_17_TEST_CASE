@@ -84,6 +84,3 @@ def execute(filename: str) -> dict:
 
 if __name__ == '__main__':
     pprint(execute('input_strings.txt'))
-
-
-
